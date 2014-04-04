@@ -14,4 +14,4 @@ vendor/
 # don't need to save any database files
 *.sqlite
 
-config/db-config.ini
+config/db-config.php

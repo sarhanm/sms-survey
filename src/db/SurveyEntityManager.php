@@ -39,17 +39,18 @@ Class SurveyEntityManager
             $isDevMode = true;
             $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__ . "/entities"), $isDevMode);
 
-            $fileName = __DIR__."/../../config/db-config.ini";
+            $fileName = __DIR__."/../../config/db-config.php";
             $dbFileConfig = false;
             $dbConfig = false;
             if(file_exists($fileName))
             {
-                $dbFileConfig = parse_ini_file($fileName, true);
+                require_once ($fileName);
             }
 
-            if($dbFileConfig)
+            if(class_exists('SurveyDBConfig'))
             {
-                $dbConfig = $dbFileConfig[$isTest ? "test" : "production"];
+                $configObj= new \SurveyDBConfig();
+                $dbConfig = $configObj->getConfig($isTest);
             }
 
             //Try to default to test
@@ -95,6 +96,9 @@ Class SurveyEntityManager
 
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($entityManager);
         $schemaTool->dropDatabase();
+
+        //Ensure we do not leak across tests.
+        SurveyEntityManager::$entityManager = null;
     }
 
     /**

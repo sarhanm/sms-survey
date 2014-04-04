@@ -167,6 +167,38 @@ class SurveyManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($id, $ss->getId());
     }
 
+    public function testGetAllActive()
+    {
+        $max = rand(1,10);
+        for($i = 0; $i < $max ; ++$i)
+        {
+            $s = new Survey();
+            $s->setDescription("a survey description".$i);
+            $s->setSurveyName("a name");
+            $s->setThankYouMessage("A wonder world!");
+            $this->manager->createSurvey($s);
+        }
+
+        $s = new Survey();
+        $s->setDescription("a survey description".$max);
+        $s->setSurveyName("a name");
+        $s->setThankYouMessage("A wonder world!");
+        $s->setStatus(SurveyStatus::disabled());
+        $this->manager->createSurvey($s);
+
+        $surveys = $this->manager->getSurveys();
+        $this->assertNotNull($surveys);
+        $this->assertEquals($max,count($surveys));
+        $this->assertEquals("a survey description0",$surveys[0]->getDescription());
+        $this->assertEquals("a survey description".($max-1),$surveys[$max-1]->getDescription());
+
+        //Now only get the disabled survey
+        $surveys = $this->manager->getSurveys(SurveyStatus::disabled());
+        $this->assertNotNull($surveys);
+        $this->assertEquals(1,count($surveys));
+        $this->assertEquals("a survey description".$max,$surveys[0]->getDescription());
+    }
+
 
 }
 

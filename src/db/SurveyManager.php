@@ -35,6 +35,18 @@ class SurveyManager
     }
 
     /**
+     * @param SurveyStatus $status
+     * @return Survey[]
+     */
+    public function getSurveys(SurveyStatus $status = null)
+    {
+        if(is_null($status))
+            $status = SurveyStatus::active();
+
+        return $this->entityManager->getRepository(Survey::NAME)->findBy(array('status'=> $status->getValue()));
+    }
+
+    /**
      * Create a survey
      *
      * @param Survey $survey
