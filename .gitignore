@@ -1,0 +1,15 @@
+.DS_Store
+.idea/
+*.log
+error_log
+*.iml
+*.eml
+
+# Ignore composer local files
+composer.lock
+autoload.php
+composer/
+vendor/
+
+# don't need to save any database files
+*.sqlite
