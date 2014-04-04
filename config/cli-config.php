@@ -8,6 +8,6 @@
 
 require_once __DIR__."/../src/import.php";
 
-$entityManager =SurveyEntityManager::getEntityManager();
+$entityManager = sarhan\survey\SurveyEntityManager::getEntityManager();
 return \Doctrine\ORM\Tools\Console\ConsoleRunner::createHelperSet($entityManager);
 ?>

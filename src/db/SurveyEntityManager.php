@@ -8,10 +8,12 @@
 
 namespace sarhan\survey;
 
+
 require_once __DIR__ . "/../import.php";
 
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
+use SebastianBergmann\Exporter\Exception;
 
 Class SurveyEntityManager
 {
@@ -21,33 +23,53 @@ Class SurveyEntityManager
     private static $entityManager = null;
 
     /**
+     * @param bool $isDevMode
+     * @param bool $isTest
+     *
+     * @throws \Exception
      * @return EntityManager
      */
     public static function getEntityManager($isDevMode = false, $isTest = false)
     {
+        global $DEFAULT_DB_CONFIG_FILE;
+
         if(!SurveyEntityManager::$entityManager)
         {
             // Create a simple "default" Doctrine ORM configuration for Annotations
             $isDevMode = true;
             $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__ . "/entities"), $isDevMode);
 
-            if($isTest)
+            $fileName = __DIR__."/../../config/db-config.ini";
+            $dbFileConfig = false;
+            $dbConfig = false;
+            if(file_exists($fileName))
             {
-                $conn = array(
-                    'driver' => 'pdo_sqlite',
-                    'memory' => true
-                );
+                $dbFileConfig = parse_ini_file($fileName, true);
             }
-            else// database configuration parameters
+
+            if($dbFileConfig)
             {
-                $conn = array(
-                    'driver' => 'pdo_sqlite',
-                    'path' => __DIR__ . '/db.sqlite',
+                $dbConfig = $dbFileConfig[$isTest ? "test" : "production"];
+            }
+
+            //Try to default to test
+            if(!$dbConfig && $isTest)
+            {
+                //default values to in-memory
+                $dbConfig = array(
+                    "driver"=>"pdo_sqlite",
+                    "memory"=>"true"
                 );
             }
 
+
+            if(!$dbConfig)
+            {
+                throw new \Exception("No configuration file found at $fileName");
+            }
+
             // obtaining the entity manager
-            SurveyEntityManager::$entityManager = EntityManager::create($conn, $config);
+            SurveyEntityManager::$entityManager = EntityManager::create($dbConfig, $config);
         }
 
         return SurveyEntityManager::$entityManager;
@@ -83,10 +105,6 @@ Class SurveyEntityManager
         $em = SurveyEntityManager::getEntityManager(true, true);
         $em->clear();
     }
-
-
-
-
 }
 
 ?>
