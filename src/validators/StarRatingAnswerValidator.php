@@ -37,6 +37,18 @@ class StarRatingAnswerValidator implements AnswerValidator
 
         return $val > 0 && $val <= $this->maxStars;
     }
+
+    /**
+     * @param $answer
+     *
+     * @return string
+     */
+    public function normalize($answer)
+    {
+        return $answer;
+    }
+
+
 }
 
 ?> 

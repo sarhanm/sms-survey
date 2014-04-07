@@ -8,6 +8,7 @@
 namespace sarhan\survey\web\admin;
 
 use sarhan\survey\SurveyManager;
+use sarhan\survey\SurveyStatus;
 
 require_once __DIR__."/../../import.php";
 
@@ -21,6 +22,7 @@ class TableData
     public $description;
     public $created;
     public $status;
+    public $action;
 
     function __construct($id,$status, $surveyName,$created, $description)
     {
@@ -29,6 +31,16 @@ class TableData
         $this->id = $id;
         $this->status = $status;
         $this->surveyName = $surveyName;
+
+        $this->action = '<a href="report.php?id='.$id.'">View Report</a>';
+        if($status == SurveyStatus::active)
+        {
+            $this->action .= ' | <a href="#">Disable</a>';
+        }
+        else
+        {
+            $this->action .= ' | <a href="#">Enable</a>';
+        }
     }
 }
 
@@ -54,7 +66,13 @@ $data = json_encode($rows);
 
                 // A table from data with keys that work fine as column names
                 var simple = new Y.DataTable({
-                    columns: ["id", "surveyName", "description","created","status"],
+                    columns: [
+                        { key: "id", formatter: "<a href=\"update.php?id={value}\">{value}</a>" },
+                        { key:"surveyName",label: "Survey Name"},
+                        { key:"description",label: "Description"},
+                        {key: "created",label:"Create Date"},
+                        {key:"status", label: "Status"},
+                        {key:"action",label:"Actions", allowHTML: true }],
                     data   : <?php echo $data ?> ,
                     summary: "A list of created Surveys",
                     caption: "Surveys"
@@ -63,7 +81,7 @@ $data = json_encode($rows);
             });
         </script>
     </head>
-    <body>
+    <body class="yui3-skin-sam">
         <div class="yui3-skin-sam"> <!-- You need this skin class -->
             <div id="simple"></div>
             <div id="labels"></div>

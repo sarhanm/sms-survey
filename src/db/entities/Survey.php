@@ -59,7 +59,7 @@ class Survey
      * This is actually a one-to-many since we have the unique=true constraint.
      * http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table
      *
-     * @ManyToMany(targetEntity="SurveyQuestion",cascade={"all"})
+     * @ManyToMany(targetEntity="SurveyQuestion",cascade={"all","persist"})
      * @JoinTable(name="survey_questions",
      *      joinColumns={@JoinColumn(name="survey_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="question_id", referencedColumnName="id", unique=true)}
@@ -178,6 +178,22 @@ class Survey
     public function setSurveyName($surveyName)
     {
         $this->surveyName = strtolower($surveyName);
+    }
+
+    public function deleteQuestion($questionId)
+    {
+        $delKey = null;
+        foreach($this->questions->toArray() as $key=>$val)
+        {
+            if($val->getId() == $questionId)
+                $delKey = $key;
+        }
+
+        if(!is_null($delKey))
+        {
+            $this->questions->remove($delKey);
+        }
+
     }
 
 }

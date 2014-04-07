@@ -10,9 +10,19 @@ namespace sarhan\survey;
 
 /**
  * @Entity @Table(name="SurveyAnswer")
+ *
+ * @NamedNativeQueries({
+ *      @NamedNativeQuery(
+ *          name           = "find-answers-by-surveyId",
+ *          resultClass    = "SurveyAnswer",
+ *          query          = "select a.* from SurveyAnswer a join survey_questions q on a.surveyQuestionId = q.question_id where q.survey_id = ?"
+ *      ),
+ * })
  **/
 class SurveyAnswer
 {
+    const NAME = 'sarhan\survey\SurveyAnswer';
+
     /**
      * @Id @Column(type="integer") @GeneratedValue
      * @var int

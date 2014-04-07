@@ -25,6 +25,18 @@ class TextAnswerValidator implements AnswerValidator
         //Just need to make sure that the answer is set and has text.
         return $answer != NULL && trim($answer) != '';
     }
+
+    /**
+     * @param $answer
+     *
+     * @return string
+     */
+    public function normalize($answer)
+    {
+        return $answer;
+    }
+
+
 }
 
 ?> 

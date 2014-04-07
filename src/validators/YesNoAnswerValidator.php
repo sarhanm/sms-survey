@@ -23,6 +23,24 @@ class YesNoAnswerValidator implements AnswerValidator
         // In array will take care of casing differences
         return in_array(strtolower($answer), $valid_values);
     }
+
+    /**
+     * @param $answer
+     *
+     * @return string
+     */
+    public function normalize($answer)
+    {
+        $yes = array("yes","y");
+        if(in_array(strtolower($answer), $yes))
+        {
+            return 'Yes';
+        }
+
+        return "No";
+    }
+
+
 }
 
 ?> 

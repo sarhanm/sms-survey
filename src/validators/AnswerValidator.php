@@ -19,6 +19,13 @@ interface AnswerValidator
      * @return boolean
      */
     public function isValid($answer);
+
+    /**
+     * @param $answer
+     *
+     * @return string
+     */
+    public function normalize($answer);
 }
 
 

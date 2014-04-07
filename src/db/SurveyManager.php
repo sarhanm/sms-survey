@@ -8,8 +8,9 @@
 
 namespace sarhan\survey;
 
-require_once(dirname(__FILE__) . "/../import.php");
-#require_once(dirname(__FILE__) . "/../enum/QuestionType.php");
+use Doctrine\ORM\UnitOfWork;
+
+require_once(__DIR__ . "/../import.php");
 
 class SurveyManager
 {
@@ -54,8 +55,7 @@ class SurveyManager
      */
     public function createSurvey(Survey $survey)
     {
-        $this->entityManager->persist($survey);
-        $this->entityManager->flush();
+        $this->save($survey);
         return $survey->getId();
     }
 
@@ -65,23 +65,32 @@ class SurveyManager
      */
     public function updateSurvey(Survey $survey)
     {
-        $this->entityManager->merge($survey);
-        $this->entityManager->flush();
+        $this->save($survey);
     }
 
     /**
      * @param $surveyQuestionId
      * @param SurveyAnswer $surveyAnswer
      */
-    public function addAnswer($surveyQuestionId, SurveyAnswer $surveyAnswer)
+    public function addAnswer($surveyQuestionId, SurveyAnswer &$surveyAnswer)
     {
         $surveyAnswer->setSurveyQuestionId($surveyQuestionId);
-        $this->entityManager->persist($surveyAnswer);
+        $this->save($surveyAnswer);
     }
 
+    /**
+     * @param $surveyId
+     *
+     * @return SurveyAnswerResult
+     */
     public function getAnswers($surveyId)
     {
+        $query = $this->getRepo(SurveyAnswer::NAME)->createNativeNamedQuery("find-answers-by-surveyId");
+        $query->setParameter(0, $surveyId);
 
+        /** @var SurveyAnswer[] $answers */
+        $answers = $query->getResult();
+        return new SurveyAnswerResult($answers);
     }
 
     /**
@@ -103,6 +112,23 @@ class SurveyManager
     {
         $entityManager = SurveyEntityManager::getEntityManager();
         return $entityManager->getRepository($entity);
+    }
+
+    private function save(&$obj)
+    {
+        //Because we cascade all operations, we need
+        //to do the correct operations based on detached or not.
+        $state = $this->entityManager->getUnitOfWork()->getEntityState($obj);
+        if($state == UnitOfWork::STATE_DETACHED)
+        {
+            $this->entityManager->merge($obj);
+        }
+        else
+        {
+            $this->entityManager->persist($obj);
+        }
+
+        $this->entityManager->flush();
     }
 
 }

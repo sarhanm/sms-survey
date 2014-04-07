@@ -224,6 +224,7 @@ class SurveyRequestService
                 $this->surveyState->setId($from);
             }
 
+            $answer = $validator->normalize($answer);
             $this->persistAnswer($this->surveyState->getId(),$question,$answer);
         }
         else

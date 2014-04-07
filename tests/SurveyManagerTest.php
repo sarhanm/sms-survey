@@ -150,6 +150,65 @@ class SurveyManagerTest extends \PHPUnit_Framework_TestCase
         $ans->setAnswer("awesome!");
         $ans->setAnsweredBy("+12064122496");
         $this->manager->addAnswer($q->getId(),$ans);
+
+        //SurveyEntityManager::testClear();
+
+        $answers = $this->manager->getAnswers($survey->getId());
+
+        $this->assertNotNull($answers);
+        $this->assertEquals(1,count($answers));
+        $this->assertEquals($answers->getAnswers($q->getId())[0]->getAnswer(),"awesome!");
+        $this->assertEquals($answers->getAnswers($q->getId())[0]->getSurveyQuestionId(),$q->getId());
+
+        //add another question
+        $q2 = new SurveyQuestion();
+        $q2->setType(QuestionType::StarRating());
+        $q2->setQuestion("Second question");
+        $survey->addQuestion($q2);
+        $this->manager->updateSurvey($survey);
+
+        $this->assertNotNull($q2->getId(),"Asserting the second question was saved");
+
+        //Create another survey and question to make sure we do not
+        // have leaks.
+        $survey2 = new Survey();
+        $survey2->setSurveyName("hi2");
+        $survey2->setDescription('stuff2');
+
+        $q3 = new SurveyQuestion();
+        $q3->setType(QuestionType::StarRating());
+        $q3->setQuestion("A question3");
+        $survey2->addQuestion($q3);
+        $this->manager->createSurvey($survey2);
+
+        //Now lets add a lot more answers!
+        $max= rand(1,10);
+        for($i = 0; $i < $max ; ++$i)
+        {
+            $ans = new SurveyAnswer();
+            $ans->setAnswer("awesome$i");
+            $ans->setAnsweredBy("+12064122496");
+            $this->manager->addAnswer($q->getId(),$ans);
+
+            $ans2 = new SurveyAnswer();
+            $ans2->setAnswer("2awesome$i");
+            $ans2->setAnsweredBy("+12064122496");
+            $this->manager->addAnswer($q2->getId(),$ans2);
+
+            $ans3 = new SurveyAnswer();
+            $ans3->setAnswer("don't return me");
+            $ans3->setAnsweredBy("+12064122496");
+            $this->manager->addAnswer($q3->getId(),$ans3);
+        }
+        $answers = $this->manager->getAnswers($survey->getId());
+
+        $this->assertNotNull($answers);
+
+        $this->assertEquals(1+$max*2,$answers->getTotalAnswers());
+
+        $answers = $this->manager->getAnswers($survey2->getId());
+        $this->assertNotNull($answers);
+        $this->assertEquals($max,$answers->getTotalAnswers());
     }
 
     public function testGetSurveyByName()
@@ -199,6 +258,33 @@ class SurveyManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("a survey description".$max,$surveys[0]->getDescription());
     }
 
+    public function testDeleteQuestionFromSurvey()
+    {
+        $survey = new Survey();
+        $survey->setSurveyName("hi");
+        $survey->setDescription('stuff');
+
+        $qtypes = QuestionType::toArray();
+
+        $max = rand(4,5);
+        for($i = 0; $i<$max;++$i)
+        {
+            $q = new SurveyQuestion();
+            $q->setType(new QuestionType(rand(1,count($qtypes))));
+            $q->setQuestion("q".$i);
+            $survey->addQuestion($q);
+        }
+
+        $this->manager->createSurvey($survey);
+
+        $toDelete = $survey->getQuestions()[rand(0,$max-1)];
+        $idToDelete = $toDelete->getId();
+
+        $survey->deleteQuestion($idToDelete);
+        $this->manager->updateSurvey($survey);
+        $this->assertEquals($max-1,count($survey->getQuestions()));
+
+    }
 
 }
 
