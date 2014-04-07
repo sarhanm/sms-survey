@@ -46,11 +46,11 @@ class ReportChartFormatter
             case ChartFormats::Bar:
             case ChartFormats::Line:
                 $data = self::getData($answers);
-                usort($data,"sarhan\survey\ReportChartFormatter::sortFunc");
+                //usort($data,"sarhan\survey\ReportChartFormatter::sortFunc");
                 return json_encode($data);
             case ChartFormats::TagCloud:
                 $data = self::getData($answers);
-                usort($data,"sarhan\survey\ReportChartFormatter::sortFunc");
+                //usort($data,"sarhan\survey\ReportChartFormatter::sortFunc");
                 return $data;
             default:
                 throw new \Exception("No format output defined for ". $format);
