@@ -8,6 +8,22 @@
 
 namespace sarhan\survey;
 
+/**
+ * @param $a
+ * @param $b
+ */
+function sortFunc($a,$b)
+{
+    $k1 = $a['key'];
+    $k2 = $b['key'];
+    if($k1 == $k2)
+    {
+        return 0;
+    }
+
+    return ($k1 < $k2) ? -1 : 1;
+}
+
 require_once __DIR__ . "/../../import.php";
 
 use MyCLabs\Enum\Enum;
@@ -46,11 +62,11 @@ class ReportChartFormatter
             case ChartFormats::Bar:
             case ChartFormats::Line:
                 $data = self::getData($answers);
-                //usort($data,"sarhan\survey\ReportChartFormatter::sortFunc");
+                $success = usort($data,"sarhan\survey\sortFunc");
                 return json_encode($data);
             case ChartFormats::TagCloud:
                 $data = self::getData($answers);
-                //usort($data,"sarhan\survey\ReportChartFormatter::sortFunc");
+                usort($data,"sarhan\survey\sortFunc");
                 return $data;
             default:
                 throw new \Exception("No format output defined for ". $format);
@@ -82,22 +98,6 @@ class ReportChartFormatter
         }
 
         return $data;
-    }
-
-    /**
-     * @param $a
-     * @param $b
-     */
-    private function sortFunc($a,$b)
-    {
-        $k1 = $a['key'];
-        $k2 = $b['key'];
-        if($k1 == $k2)
-        {
-            return 0;
-        }
-
-        return ($k1 < $k2) ? -1 : 1;
     }
 }
 
