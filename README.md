@@ -1,4 +1,7 @@
 
+[![Build Status](https://travis-ci.org/sarhanm/sms-survey.png)](https://travis-ci.org/sarhanm/sms-survey)
+
+
 # WORK IN PROGRESS. DO NOT USE. EVERYTHING IS SUBJECT TO CHANGE.
 
 Once the project is complete, this library will be able:
