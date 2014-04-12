@@ -298,6 +298,41 @@ class SurveyServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(strstr($res->getContent(),$thankYou) !== false);
     }
 
+    public function testSurveyName()
+    {
+        $survey = new Survey();
+        $survey->setSurveyName("yesno");
+        $survey->setDescription('stuff');
+
+        $q = new SurveyQuestion();
+        $q->setType(QuestionType::YesNo());
+        $q->setQuestion("A question");
+        $survey->addQuestion($q);
+
+        //add another question
+        $q2 = new SurveyQuestion();
+        $q2->setType(QuestionType::StarRating());
+        $secondQuestion = "Second question";
+        $q2->setQuestion($secondQuestion);
+        $survey->addQuestion($q2);
+
+        $this->surveyManager->createSurvey($survey);
+
+        SurveyEntityManager::testClear();
+
+        $service = $this->newSurveyService();
+        $this->request['Body'] = "yesno";
+        $this->request['From']  = "1234";
+        $serviced = $service->service();
+        $this->assertTrue($serviced);
+
+        $this->request['Body'] = "no";
+        $this->request['From']  = "1234";
+        $serviced = $service->service();
+        $this->assertTrue($serviced);
+        $this->assertContains($secondQuestion,$service->getResponse()->getContent());
+    }
+
     /**
      * @return SurveyRequestService
      */

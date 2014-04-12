@@ -15,7 +15,7 @@ class AnswerValidatorTest extends \PHPUnit_Framework_TestCase
 
     function testYesNoSurveyQuestion()
     {
-        $v = new ValidatorProvider();
+        $v = new AnswerValidatorProvider();
         $q = $v->getValidator(QuestionType::YesNo());
         $this->assertFalse($q->isValid("what"));
         $this->assertTrue($q->isValid("Yes"));
@@ -36,7 +36,7 @@ class AnswerValidatorTest extends \PHPUnit_Framework_TestCase
     function testStarSurveyQuestion()
     {
         $max = 5;
-        $v = new ValidatorProvider();
+        $v = new AnswerValidatorProvider();
         $q = $v->getValidator(QuestionType::StarRating());
 
         $this->assertFalse($q->isValid("what"));
@@ -55,7 +55,7 @@ class AnswerValidatorTest extends \PHPUnit_Framework_TestCase
 
     function testStringSurveyQuestion()
     {
-        $v = new ValidatorProvider();
+        $v = new AnswerValidatorProvider();
         $q = $v->getValidator(QuestionType::Text());
 
         $this->assertFalse($q->isValid(NULL));

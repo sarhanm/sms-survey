@@ -20,6 +20,7 @@ class SurveyStateTest extends \PHPUnit_Framework_TestCase
         $surveyStub->expects($this->any())
             ->method('getQuestions')->will($this->returnValue(array($questionStub,$questionStub,$questionStub)));
 
+        $questionStub->expects($this->any())->method("getType")->will($this->returnValue(QuestionType::YesNo()));
         $this->assertEquals(array($questionStub,$questionStub,$questionStub),$surveyStub->getQuestions());
 
         $s = new SurveyState();
@@ -29,10 +30,12 @@ class SurveyStateTest extends \PHPUnit_Framework_TestCase
         $s->setId("foobar");
         $this->assertTrue($s->hasId());
 
-        $q = $s->getQuestion(0);
+        $s->setQuestionIndex(0);
+        $q = $s->getQuestion();
         $this->assertNotNull($q);
 
-        $q = $s->getQuestion(3);
+        $s->setQuestionIndex(3);
+        $q = $s->getQuestion();
         $this->assertNull($q);
     }
 
@@ -52,6 +55,19 @@ class SurveyStateTest extends \PHPUnit_Framework_TestCase
         $s = new SurveyState(time());
         $s->setSurveyExecutionState(SurveyExecutionState::InProgress());
         $this->assertFalse($s->isExpired(1000));
+    }
+
+    public function testSerialization()
+    {
+        $s = new SurveyState(time()-500);
+        $serialzedValue = serialize($s);
+
+        /**
+         * @vars $state SurveyState
+         */
+        $state = unserialize($serialzedValue);
+
+        $this->assertTrue($state->isState(SurveyExecutionState::Unknown()));
     }
 }
  

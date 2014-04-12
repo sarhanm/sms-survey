@@ -58,7 +58,7 @@ class SurveyRequestService
     private $surveyManager;
 
     /**
-     * @var ValidatorProvider
+     * @var AnswerValidatorProvider
      */
     private $answerValidatorProvider;
 
@@ -72,7 +72,7 @@ class SurveyRequestService
         $this->log = \Logger::getLogger(__CLASS__);
 
         $this->surveyManager = new SurveyManager();
-        $this->answerValidatorProvider = new ValidatorProvider();
+        $this->answerValidatorProvider = new AnswerValidatorProvider();
 
         // We do this for testing purposes, so we can mimic a session
         if(!isset($session_object))
@@ -88,6 +88,7 @@ class SurveyRequestService
         if(array_key_exists(self::SESSION_KEY, $this->session))
         {
             $this->surveyState = $this->session[self::SESSION_KEY];
+            //var_dump($this->surveyState);
         }
         else
         {
@@ -112,6 +113,7 @@ class SurveyRequestService
         }
 
         $this->session[self::SESSION_KEY] = $this->surveyState;
+        //var_dump($this->session[self::SESSION_KEY]);
     }
 
     /**
@@ -197,12 +199,12 @@ class SurveyRequestService
             $this->surveyState->setQuestionIndex($qindex);
 
             //return first question
-            $question = $this->surveyState->getQuestion($qindex);
-            $this->response($question->getQuestion());
+            $question = $this->surveyState->getQuestion();
+            $this->response($question);
             return true;
         }
 
-        $question = $this->surveyState->getQuestion($qindex);
+        $question = $this->surveyState->getQuestionObj();
 
         $validator = $this->answerValidatorProvider->getValidator($question->getType());
 
@@ -234,16 +236,12 @@ class SurveyRequestService
             return true;
         }
 
-        $next_question_obj = $this->surveyState->getQuestion($qindex);
-        if(is_null($next_question_obj))
+        $next_question = $this->surveyState->getQuestion($qindex);
+        if(is_null($next_question))
         {
             //no more questions. Send thank you message.
             $this->surveyState->setSurveyExecutionState(SurveyExecutionState::Completed());
             $next_question = $this->surveyState->getSurvey()->getThankYouMessage();
-        }
-        else
-        {
-            $next_question = $next_question_obj->getQuestion();
         }
 
         $this->response($next_question);

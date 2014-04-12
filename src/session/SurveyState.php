@@ -120,18 +120,36 @@ class SurveyState
     }
 
     /**
-     * @param int $index
-     *
-     * @return SurveyQuestion
+     * Returns the question for $this->getQuestionIndex()
+     * @return string
      */
-    public function getQuestion($index)
+    public function getQuestion()
     {
-        if($index >= count($this->survey->getQuestions()))
+        $qobj = $this->getQuestionObj();
+
+        if(is_null($qobj))
+            return null;
+
+        $question = $qobj->getQuestion();
+
+        //Append the question hint.
+        $question .= $qobj->getType()->getQuestionHint();
+
+        return $question;
+    }
+
+    /**
+     * Returns the SurveyQuestion for $this->getQuestionIndex()
+     * @return null|SurveyQuestion
+     */
+    public function getQuestionObj()
+    {
+        if($this->questionIndex >= count($this->survey->getQuestions()))
         {
             return null;
         }
 
-        return $this->survey->getQuestions()[$index];
+        return $this->survey->getQuestions()[$this->questionIndex];
     }
 
     /**

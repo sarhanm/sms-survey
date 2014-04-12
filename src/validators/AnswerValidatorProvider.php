@@ -10,7 +10,7 @@ namespace sarhan\survey;
 
 require_once(__DIR__ . "/../import.php");
 
-class ValidatorProvider
+class AnswerValidatorProvider
 {
 
     /**
