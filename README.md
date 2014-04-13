@@ -1,21 +1,71 @@
 
 [![Build Status](https://travis-ci.org/sarhanm/sms-survey.png)](https://travis-ci.org/sarhanm/sms-survey)
 
+# Manual Setup
 
-# WORK IN PROGRESS. DO NOT USE. EVERYTHING IS SUBJECT TO CHANGE.
+### PHP setup
 
-Once the project is complete, this library will be able:
+1. Clone this repo.
 
-1. Handle twilio SMS requests and produce a survey and interact with the user
-2. Provide a common UI that can be used to administer the active surveys
-3. Provide reporting for completed/running surveys
+2. Run composer to install all dependencies
 
-This project is really meant for non-profit organizations who would like feedback from their constituents via SMS.
+    ```
+    php composer.phar install
+    ```
+Note: You can download composer.phar from https://getcomposer.org/
 
+### Database Configuration
+1. Add a file called "db-config.php" to ```survey-sms/config```
 
-### Configuration
+File should contain the following:
+    
+    ```php
+    
+    if(!defined('SARHAN_SURVEY'))
+        die("Improper use of file!");
 
-TODO
+    class SurveyDBConfig
+    {
+        private $test = array(
+            'driver' => 'pdo_sqlite',
+            'memory' => true);
 
-### Generate mysql code
-php  vendor/bin/doctrine orm:schema-tool:create  --dump-sql
+        private $production = array(
+            'driver' => 'pdo_mysql', //or whatever driver you will be using.
+            'dbname'=>'your_dbname',
+            'user'=>'your_dbuser',
+            'password'=>'your_dbpassword',
+            'host'=>'your_dbhost'
+            );
+
+        public function getConfig($isTest = false)
+        {
+            if($isTest)
+                return $this->test;
+            return $this->production;
+        }
+
+    }```
+
+Driver options can be found on [Doctrin's documentation page](http://doctrine-dbal.readthedocs.org/en/latest/reference/configuration.html#driver)
+
+2. Generate the SQL code to generate the tables.
+
+    ```php vendor/bin/doctrine orm:schema-tool:create  --dump-sql```
+
+### Test Manual Setup
+
+    ```php vendor/phpunit/phpunit/phpunit tests/```
+
+### Twilio Setup
+
+Add ```http://your-host-name.com/path-to-git-repo/survey-sms/src/request/SurveyRequestService.php``` to your twilio Messaging callback settings
+
+### Admin pages.
+
+Admin pages are available to manage your surveys and view reporting.
+
+**Warning: These pages are rough, quick and dirty implementations. They need a lot of work.**
+
+```http://your-host-name.com/path-to-git-repo/survey-sms/src/web/admin```
+

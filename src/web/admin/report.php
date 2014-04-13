@@ -54,7 +54,7 @@ foreach($survey->getQuestions() as $q)
 
             .bar{
                 margin:10px 10px 10px 10px;
-                width:600px;
+                width:700px;
                 height:200px;
             }
         </style>
