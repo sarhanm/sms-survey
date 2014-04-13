@@ -8,7 +8,14 @@
 
 namespace sarhan\survey;
 
-
+/**
+ * Class ReportData
+ *
+ * Transforms a question an ALL the answers into data that the charting
+ * library can then understand.
+ *
+ * @package sarhan\survey
+ */
 class ReportData
 {
     /**
