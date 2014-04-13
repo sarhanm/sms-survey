@@ -1,11 +1,12 @@
 {
-    "name": "sarhan/survey",
+    "name": "sarhanm/sms-survey",
     "description": "SMS Driven Survey - PHP",
     "keywords": ["survey", "twilio","sms"],
     "type": "library",
     "homepage": "http://www.TODO.com",
 
     "require": {
+        "php": ">=5.4.0",
         "apache/log4php": "2.3.0",
         "doctrine/orm": "*",
         "myclabs/php-enum": "*"
