@@ -24,22 +24,31 @@ class TableData
     public $status;
     public $action;
 
-    function __construct($id,$status, $surveyName,$created, $description)
+    /**
+     * @param $id
+     * @param $status
+     * @param $surveyName
+     * @param $created
+     * @param $description
+     */
+    function __construct($id,SurveyStatus $status, $surveyName,$created, $description)
     {
         $this->created = $created;
         $this->description = $description;
         $this->id = $id;
-        $this->status = $status;
+        $this->status = $status->getName();
         $this->surveyName = $surveyName;
 
         $this->action = '<a href="report.php?id='.$id.'">View Report</a>';
-        if($status == SurveyStatus::active)
+        if($status->getValue() == SurveyStatus::active)
         {
-            $this->action .= ' | <a href="#">Disable</a>';
+            $sid = SurveyStatus::disabled;
+            $this->action .= " | <a href=\"changeStatus.php?id=$id&status=$sid\">Disable</a>";
         }
         else
         {
-            $this->action .= ' | <a href="#">Enable</a>';
+            $sid = SurveyStatus::active;
+            $this->action .= " | <a href=\"changeStatus.php?id=$id&status=$sid\">Enable</a>";
         }
     }
 }
@@ -47,7 +56,7 @@ class TableData
 $rows= array();
 foreach($surveys as $s)
 {
-    $rows[] = new TableData($s->getId(),$s->getStatus()->getValue(),
+    $rows[] = new TableData($s->getId(),$s->getStatus(),
         $s->getSurveyName(),$s->getCreated()->format('j/n/y H:i'),$s->getDescription());
 }
 

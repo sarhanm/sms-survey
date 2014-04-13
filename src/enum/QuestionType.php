@@ -27,7 +27,7 @@ class QuestionType extends Enum
     const Text = 1;
     const StarRating = 2;
     const YesNo = 3;
-    const MultipleChoice = 4;
+    //const MultipleChoice = 4;
 
     public function getQuestionHint()
     {
@@ -39,8 +39,8 @@ class QuestionType extends Enum
                 return "(Rate 1 to 5)";
             case self::YesNo:
                 return "(Y or N)";
-            case self::MultipleChoice:
-                return "(Choose a number)";
+//            case self::MultipleChoice:
+//                return "(Choose a number)";
         }
 
         throw new \Exception("Could not find a question hint for the given type!");

@@ -42,7 +42,9 @@ class SurveyManager
     public function getSurveys(SurveyStatus $status = null)
     {
         if(is_null($status))
-            $status = SurveyStatus::active();
+        {
+            return $this->entityManager->getRepository(Survey::NAME)->findAll();
+        }
 
         return $this->entityManager->getRepository(Survey::NAME)->findBy(array('status'=> $status->getValue()));
     }

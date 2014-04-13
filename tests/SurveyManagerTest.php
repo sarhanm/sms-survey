@@ -245,7 +245,7 @@ class SurveyManagerTest extends \PHPUnit_Framework_TestCase
         $s->setStatus(SurveyStatus::disabled());
         $this->manager->createSurvey($s);
 
-        $surveys = $this->manager->getSurveys();
+        $surveys = $this->manager->getSurveys(SurveyStatus::active());
         $this->assertNotNull($surveys);
         $this->assertEquals($max,count($surveys));
         $this->assertEquals("a survey description0",$surveys[0]->getDescription());

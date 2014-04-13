@@ -22,12 +22,9 @@ $survey = $manager->getSurvey($surveyId);
 
 if($_REQUEST['submit'])
 {
-    echo  "in submit<br/>";
-    //add a question to the survey
+
     $type = $_REQUEST['type'];
     $questionString = trim($_REQUEST['question']);
-    echo $questionString.'<br/>';
-    echo "type: $type <br/>";
 
     if(is_numeric($type) && $questionString != "" )
     {
@@ -80,6 +77,7 @@ class QuestionData
         }
 
         $this->action = '<a href="update.php?id='.$surveyId.'&qid='.$id.'&delete=true">Delete</a>';
+        $this->action .= " | <a href=\"editQuestion.php?id=$surveyId&qid=$id\">Edit</a>";
     }
 }
 
