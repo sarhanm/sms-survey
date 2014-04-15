@@ -15,3 +15,4 @@ vendor/
 *.sqlite
 
 config/db-config.php
+config/survey-db-config.php
