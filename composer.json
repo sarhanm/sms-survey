@@ -9,7 +9,8 @@
         "php": ">=5.4.0",
         "apache/log4php": "2.3.0",
         "doctrine/orm": "*",
-        "myclabs/php-enum": "*"
+        "myclabs/php-enum": "*",
+        "twilio/sdk": "*"
     },
 
     "require-dev": {

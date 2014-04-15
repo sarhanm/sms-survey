@@ -187,7 +187,10 @@ class SurveyRequestService
     public function service()
     {
         if(!$this->shouldService())
+        {
+            $this->response("Sorry, could not find a survey by that name.");
             return false;
+        }
 
 
         $qindex = $this->surveyState->getQuestionIndex();

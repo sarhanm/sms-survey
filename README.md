@@ -1,6 +1,15 @@
 
 [![Build Status](https://travis-ci.org/sarhanm/sms-survey.png)](https://travis-ci.org/sarhanm/sms-survey)
 
+# Install via Composer
+
+```json
+    "require": {
+        "sarhanm/sms-survey": "*"        
+    }
+```
+
+
 # Manual Setup
 
 ### PHP setup
@@ -16,7 +25,8 @@ php composer.phar install
 Note: You can download composer.phar from https://getcomposer.org/
 
 ### Database Configuration
-1. Add a file called "db-config.php" to `survey-sms/config`
+
+#### 1. Create a file named "survey-db-config.php"
 
 File should contain the following:
     
@@ -25,34 +35,37 @@ File should contain the following:
 if(!defined('SARHAN_SURVEY'))
     die("Improper use of file!");
 
-class SurveyDBConfig
-{
-    private $test = array(
+return array(
+    "test" => array(
         'driver' => 'pdo_sqlite',
-        'memory' => true);
-
-    private $production = array(
-        'driver' => 'pdo_mysql', //or whatever driver you will be using.
+        'memory' => true)
+    ,
+    "production" => array(
+        'driver' => 'pdo_mysql',
         'dbname'=>'your_dbname',
         'user'=>'your_dbuser',
-        'password'=>'your_dbpassword',
+        'password'=>'you_dbpasswd',
         'host'=>'your_dbhost'
-        );
-
-    public function getConfig($isTest = false)
-    {
-        if($isTest)
-            return $this->test;
-        return $this->production;
-    }
-
-}
+    )
+);
 ?>
 ```
 
 Driver options can be found on [Doctrin's documentation page](http://doctrine-dbal.readthedocs.org/en/latest/reference/configuration.html#driver)
 
-2. Generate the SQL code to generate the tables.
+This file will be discovered in the following way
+
+1.We'll look to see if a PHP named constant is defined with the path to the above file. 
+```php
+define('SURVEY_DB_CONFIG_PATH', 'path/to/db/config/survey-db-config.php');
+```
+
+2.Look for the file `survey-db-config.php` in the `include_path` via `stream_resolve_include_path` 
+
+3.Look for the file `survey-db-config.php` in the `cwd()` or in `cwd()/config`.
+
+
+#### 2. Generate the SQL code to create DB tables.
 
 ```bash
 php vendor/bin/doctrine orm:schema-tool:create  --dump-sql
@@ -60,12 +73,13 @@ php vendor/bin/doctrine orm:schema-tool:create  --dump-sql
 
 Take the output and run in your database.
 
-You can alternatively like doctrine execute the sql statements for you (as long as you properly configured your database in step 1 above).
+You can alternatively let doctrine execute the sql statements for you as long as you properly configured your database.
 
 ```bash
 php vendor/bin/doctrine orm:schema-tool:create
 ```
 
+You can see other options by passing a `-h` option to the above command.
 
 ### Test Manual Setup
 
@@ -73,20 +87,39 @@ php vendor/bin/doctrine orm:schema-tool:create
 php vendor/bin/phpunit tests/
 ```
 
-NOTE: By default, this does not test your database setup as the tests are run against a in-memory database. If you would like to test against a real database, just change the `$test` in `db-config.php` to reference your database.
+NOTE: By default, this does not test your database setup as the tests are run against a in-memory database. If you would like to test against a real database, just change the `$test` in `survey-db-config.php` to reference your database.
 
 ### Twilio Setup
 
-Add `http://your-host-name.com/path-to-git-repo/survey-sms/src/request/SurveyRequestService.php` to your twilio Messaging callback settings
+In your Twilio Request Handler, add the following
+
+```php
+//Order does matter. Do the require before the session start so (de)serialization is aware
+//of all the loaded classes.
+require_once("survey-sms/src/request/TwilioRequestHandler.php");
+session_start();
+
+$twilioRequest = new \sarhan\survey\TwilioRequestHandler();
+
+// $twilioAccountAuthToken is your auth token given to you by twilio
+$response = $twilioRequest->handleRequest($twilioAccountAuthToken);
+
+if(!is_null($response))
+{
+    header($response->getHeader());
+    echo $response->getContent();
+}
+else
+{
+    echo "Invalid Twilio Request";
+}
+```
 
 ### Admin pages.
 
 Admin pages are available to manage your surveys and view reporting.
 
-**Warning: These pages are rough, quick and dirty implementations. They need a lot of work.**
+**Warning: These pages are rough, quick and dirty implementations. They need a lot of work. They are also not secure. You should put some password proction on those directories/files**
 
-`http://your-host-name.com/path-to-git-repo/survey-sms/src/web/admin`
+`http://your-host-name.com/path-to-git-repo-survey-sms/src/web/admin`
 
-# Downloading this package via composer
-
-TODO: Go through how to properly configure if the package is downloaded via composer.
