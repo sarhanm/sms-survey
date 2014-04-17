@@ -8,6 +8,24 @@ Twilio is a text messaging service which allows you to interact with your users/
 
 This library uses twilio to conduct surveys. This project was born out of a need for non-profit groups to survey their communities for feed back (mostly after an event/class/seminars) without paying lots and lots of money. Twilio.org offers a discounted rate for 501(c)3 organizations, which makes it ideal.
 
+##Screenshots
+
+Adding a survey
+
+![Add a survey](https://raw.githubusercontent.com/sarhanm/sms-survey/master/docs/create_new_survey.png)
+
+List of active and disabled surveys:
+
+![survey list](https://raw.githubusercontent.com/sarhanm/sms-survey/master/docs/survey_list.png)
+
+Adding a question to a survey
+
+![Adding Questions](https://raw.githubusercontent.com/sarhanm/sms-survey/master/docs/add_question.png)
+
+Survey Report (Text was all sample text)
+
+![Survey Report](https://raw.githubusercontent.com/sarhanm/sms-survey/master/docs/survey_report.png)
+
 ## Features
 
 ### Manage Survey
