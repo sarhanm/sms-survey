@@ -26,6 +26,11 @@ interface AnswerValidator
      * @return string
      */
     public function normalize($answer);
+
+    /**
+     * @return string Text to present to the user on how to format their answer
+     */
+    public function getHelperText();
 }
 
 

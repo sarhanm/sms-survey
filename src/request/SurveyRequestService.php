@@ -234,7 +234,8 @@ class SurveyRequestService
         }
         else
         {
-            $response = "Sorry, we couldn't understand your response. Please try again.";
+            $helperText = $validator->getHelperText();
+            $response = "Sorry, we couldn't understand your response. $helperText";
             $this->response($response);
             return true;
         }

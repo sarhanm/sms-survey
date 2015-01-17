@@ -36,7 +36,7 @@ class QuestionType extends Enum
             case self::Text:
                 return "";
             case self::StarRating:
-                return "(Rate 1 to 5)";
+                return "(Rate 1 (lowest) to 5 (highest) )";
             case self::YesNo:
                 return "(Y or N)";
 //            case self::MultipleChoice:

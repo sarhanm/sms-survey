@@ -36,6 +36,14 @@ class TextAnswerValidator implements AnswerValidator
         return $answer;
     }
 
+    /**
+     * @return string Text to present to the user on how to format their answer
+     */
+    public function getHelperText()
+    {
+        return "Your response was empty. Please try again";
+    }
+
 
 }
 

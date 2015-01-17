@@ -208,7 +208,7 @@ class SurveyServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($serviced);
         $this->assertNotNull($res);
         $this->assertTrue(count($res->getContent()) > 0);
-        $this->assertTrue(strstr($res->getContent(),"Sorry, we couldn't understand your response. Please try again.") !== false);
+        $this->assertTrue(strstr($res->getContent(),"Sorry, we couldn't understand your response. Your answer must be between 1 and 5") !== false);
 
         $this->request[SurveyRequestService::BODY_KEY] = "0";
         $serviced = $manager->service();
@@ -216,7 +216,7 @@ class SurveyServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($serviced);
         $this->assertNotNull($res);
         $this->assertTrue(count($res->getContent()) > 0);
-        $this->assertTrue(strstr($res->getContent(),"Sorry, we couldn't understand your response. Please try again.") !== false);
+        $this->assertTrue(strstr($res->getContent(),"Sorry, we couldn't understand your response") !== false);
 
         //$session = $this->session;
         for( $i = 1; $i <= $max ; $i++)
