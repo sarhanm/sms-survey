@@ -4,6 +4,6 @@ php:
   - 5.5
 
 install:
-   - composer install
+   - composer install --no-dev
 
 script: phpunit --stderr tests/
