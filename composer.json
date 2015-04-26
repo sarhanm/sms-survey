@@ -8,7 +8,7 @@
     "require": {
         "php": ">=5.4.0",
         "apache/log4php": "2.3.0",
-        "doctrine/orm": "*",
+        "doctrine/orm": ">=2.4",
         "myclabs/php-enum": "*",
         "twilio/sdk": "*"
     },
