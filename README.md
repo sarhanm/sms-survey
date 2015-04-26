@@ -118,7 +118,21 @@ This file will be discovered in the following way
 
 3. Look for the file `survey-db-config.php` in the `cwd()` or in `cwd()/config`.
 
-#### 2. Generate the SQL code to create DB tables.
+#### 2. Setup Doctrine's cli-config.php File
+
+NOTE: This only applies if you installed this library via composer. Otherwise the cli-config.php file already exists in the correct location at the root.
+
+Doctrine looks for a cli-config.php file at the root directory.
+
+Add a cli-config.php file either in your root directory or in a folder named "config" in your root directory.
+
+The contents of the cli-config.php should be
+```php
+require './vendor/sarhanm/sms-survey/config/cli-config.php';
+```
+
+
+#### 3. Generate the SQL code to create DB tables.
 
 ```bash
 php vendor/bin/doctrine orm:schema-tool:create  --dump-sql
